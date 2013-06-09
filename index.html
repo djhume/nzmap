@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.gxp.NMA { fill: #ddc; }
+.gxp.ISL { fill: #cdd; }
+.gxp.APS { fill: #cdc; }
+.gxp.STK { fill: #ddd; }
+.gxp.WPW { fill: #ddd; }
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script src="http://d3js.org/topojson.v0.min.js"></script>
+<script>
+
+var width = 960,
+    height = 1160;
+
+var priceById = d3.map();
+
+var projection = d3.geo.mercator()
+    .scale(2900)
+    .translate([width,-height/0.65])
+    .rotate([-180,0]);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+//d3.json("NZ_regions_topo.json", function(error, gxps) {
+//  console.log(gxps);
+//});
+
+//d3.json("NZ_high_topo.json", function(error, regions) {
+//  svg.append("path")
+//      .datum(topojson.object(regions, regions.objects.NZ_high_gxps_transformed_new))
+//      .attr("d", path);
+//});
+
+d3.json("NZ_high_topo.json", function(error, regions) {
+  svg.selectAll(".subunit")
+      .data(topojson.object(regions, regions.objects.NZ_high_gxps_transformed_new).geometries)
+    .enter().append("path")
+      .attr("class", function(d) { return "gxp " + d.id; })
+      .attr("d", path);
+});
+    
+    
+//Load price data    
+d3.csv("price_test.csv", function(d) { priceById.set(d.gxp, +d.price); })
+ 
+    
+console.log(priceById)
+
+</script>
