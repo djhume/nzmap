@@ -1,0 +1,181 @@
+<META HTTP-EQUIV="REFRESH" CONTENT="300">
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+/*----------------------------
+	Default slider
+-----------------------------*/
+
+#defaultSlider{
+	width:200px;
+	margin-bottom:20px;
+}
+
+<!--.gxp {
+  fill: gray;
+}
+var colors = ["#ADDD8E","#78C679","#41AB5D","#238443","#006837","#004529","#000000","#EF3B2C"];
+-->
+.q0-9 { fill:rgb(173,221,142); }
+.q1-9 { fill:rgb(120,198,121); }
+.q2-9 { fill:rgb(65,171,93); }
+.q3-9 { fill:rgb(35,132,67); }
+.q4-9 { fill:rgb(0,104,55); }
+.q5-9 { fill:rgb(0,69,41); }
+.q6-9 { fill:rgb(0,0,0); }
+.q7-9 { fill:#EF3B2C; }
+<!-- .q8-9 { fill:rgb(8,48,107); } -->
+
+
+
+.q0-35 { fill:rgb(254,254,154); }
+.q1-35 { fill:rgb(206,234,147); }
+.q2-35 { fill:rgb(173,221,142); }
+.q3-35 { fill:rgb(151,211,137); }
+.q4-35 { fill:rgb(138,206,132); }
+.q5-35 { fill:rgb(130,202,129); }
+.q6-35 { fill:rgb(125,200,125); }
+.q7-35 { fill:rgb(120,198,121); }
+.q8-35 { fill:rgb(111,194,116); }
+.q9-35 { fill:rgb(100,190,110); }
+.q10-35 { fill:rgb(88,184,105); }
+.q11-35 { fill:rgb(75,178,99); }
+.q12-35 { fill:rgb(64,170,92); }
+.q13-35 { fill:rgb(56,163,87); }
+.q14-35 { fill:rgb(49,155,81); }
+.q15-35 { fill:rgb(44,147,75); }
+.q16-35 { fill:rgb(39,139,71); }
+.q17-35 { fill:rgb(35,131,66); }
+.q18-35 { fill:rgb(29,125,63); }
+.q19-35 { fill:rgb(24,119,60); }
+.q20-35 { fill:rgb(19,114,58); }
+.q21-35 { fill:rgb(14,109,56); }
+.q22-35 { fill:rgb(10,104,55); }
+.q23-35 { fill:rgb(6,98,53); }
+.q24-35 { fill:rgb(3,92,51); }
+.q25-35 { fill:rgb(2,85,48); }
+.q26-35 { fill:rgb(0,77,45); }
+.q27-35 { fill:rgb(0,68,40); }
+.q28-35 { fill:rgb(0,58,35); }
+.q29-35 { fill:rgb(0,47,29); }
+.q30-35 { fill:rgb(0,36,22); }
+.q31-35 { fill:rgb(0,25,16); }
+.q32-35 { fill:rgb(0,15,10); }
+.q33-35 { fill:rgb(0,6,4); }
+<!--.q34-35 { fill:rgb(0,0,0); }-->
+.q34-35 { fill:#EF3B2C; }
+
+			#tooltip {
+				position: absolute;
+				width: 300px;
+				height: auto;
+				padding: 10px;
+				background-color: white;
+				-webkit-border-radius: 10px;
+				-moz-border-radius: 10px;
+				border-radius: 10px;
+				-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+				pointer-events: none;
+			}
+			
+			#tooltip.hidden {
+				display: none;
+			}
+			
+			#tooltip p {
+				margin: 0;
+				font-family: sans-serif;
+				font-size: 16px;
+				line-height: 20px;
+			}
+
+
+
+</style>
+<body>
+<div id='slider'></div>
+
+<div id="tooltip" class="hidden">
+	<p><strong>Current price at: </strong></p>
+	<p><span id="value">100</span></p>
+</div>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/queue.v1.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+
+<script>
+
+var slider = d3.select("#slider").selectAll("div")
+                .data(d3.entries({epsilon: 200}))
+              .enter().append("div")
+                .attr("id", function(d) { return d.key; });
+                
+var width = 960,
+    height = 1160;
+ 
+var priceById =d3.map();
+
+var projection = d3.geo.mercator()
+    .scale(2900)
+    .translate([width,-height/0.65])
+    .rotate([-180,0]);
+
+var path = d3.geo.path().projection(projection);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+queue()
+    .defer(d3.json, "/nz_gxp.json")
+    .defer(d3.csv, "price.csv",function(d) {priceById.set(d.id,+d.price); })
+    .await(ready);
+
+function ready(error, nz_gxp) {
+	var quantize = d3.scale.quantize()
+	//Playing with suitable scales, to a max of log(400)
+    //.domain([d3.min(d3.values(priceById))-(d3.min(d3.values(priceById))*0.125), d3.max(d3.values(priceById))+(d3.max(d3.values(priceById))*0.01)])
+    //.domain([Math.log(d3.min(d3.values(priceById))), Math.log(d3.max(d3.values(priceById)))])
+    .domain([Math.log(d3.min(d3.values(priceById))), Math.log(400)])
+    //.domain([0, Math.log(400)])
+ 
+    .range(d3.range(35).map(function(i) { return "q" + i + "-35"; }));
+
+	console.log(Math.log(d3.max(d3.values(priceById))))
+	//console.log(Math.log(d3.min(d3.values(priceById))))
+    svg.append("g")
+        .attr("class","GXP_WGS84")
+      .selectAll("path")
+        .data(topojson.feature(nz_gxp, nz_gxp.objects.GXP_WGS84).features)
+      .enter().append("path")
+        .attr("class", function(d) { return quantize(Math.log(priceById.get(d.id)));})
+        //.attr("class", function(d) { console.log(Math.log(priceById.get(d.id)));})
+
+        .attr("d", path);
+    svg.selectAll("path").on('mouseover', function(d) { 
+		//console.log(d.properties.name + '(' + d.id + ') $' + priceById.get(d.id)); 
+		
+							//Update the tooltip position and value
+					d3.select("#tooltip")
+						.style("left", 300 + "px")
+						.style("top", 400 + "px")						
+						.select("#value")
+						.text(d.properties.name + '(' + d.id + ') = $' + priceById.get(d.id));
+			   
+					//Show the tooltip
+					d3.select("#tooltip").classed("hidden", false);
+
+		
+		});
+        
+    
+        }
+ 
+
+
+ 
+ 
+</script>
