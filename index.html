@@ -65,31 +65,31 @@ var colors = ["#ADDD8E","#78C679","#41AB5D","#238443","#006837","#004529","#0000
 <!--.q34-35 { fill:rgb(0,0,0); }-->
 .q34-35 { fill:#EF3B2C; }
 
-			#tooltip {
-				position: absolute;
-				width: 300px;
-				height: auto;
-				padding: 10px;
-				background-color: white;
-				-webkit-border-radius: 10px;
-				-moz-border-radius: 10px;
-				border-radius: 10px;
-				-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-				-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-				box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-				pointer-events: none;
-			}
+#tooltip {
+    position: absolute;
+	width: 600px;
+	height: auto;
+	padding: 10px;
+	background-color: white;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	-moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+	pointer-events: none;
+}
 			
-			#tooltip.hidden {
-				display: none;
-			}
+#tooltip.hidden {
+	display: none;
+}
 			
-			#tooltip p {
-				margin: 0;
-				font-family: sans-serif;
-				font-size: 16px;
-				line-height: 20px;
-			}
+#tooltip p {
+	margin: 0;
+	font-family: sans-serif;
+	font-size: 26px;
+	line-height: 30px;
+}
 
 
 
@@ -113,21 +113,23 @@ var slider = d3.select("#slider").selectAll("div")
               .enter().append("div")
                 .attr("id", function(d) { return d.key; });
                 
-var width = 960,
-    height = 1160;
+var width = 2460,
+    height = 3180;
  
 var priceById =d3.map();
 
 var projection = d3.geo.mercator()
-    .scale(2900)
-    .translate([width,-height/0.65])
+    .scale(10000)
+    .translate([width,-height/0.50])
     .rotate([-180,0]);
 
 var path = d3.geo.path().projection(projection);
 
 var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    //.attr("width", width)
+    //.attr("height", height);
+    .attr("viewBox", "0 0 " + width + " " + height )
+    .attr("preserveAspectRatio", "xMidYMid meet");
 
 queue()
     .defer(d3.json, "/nz_gxp.json")
@@ -160,8 +162,8 @@ function ready(error, nz_gxp) {
 		
 							//Update the tooltip position and value
 					d3.select("#tooltip")
-						.style("left", 300 + "px")
-						.style("top", 400 + "px")						
+						//.style("left", 300 + "px")
+						//.style("top", 400 + "px")						
 						.select("#value")
 						.text(d.properties.name + '(' + d.id + ') = $' + priceById.get(d.id));
 			   
