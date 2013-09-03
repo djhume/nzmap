@@ -19,24 +19,11 @@
 	
 }
 
-
-/*----------------------------
-	Default slider
------------------------------*/
-
 #defaultSlider{
 	width:200px;
 	margin-bottom:20px;
 }
 
-.q0-9 { fill:rgb(173,221,142); }
-.q1-9 { fill:rgb(120,198,121); }
-.q2-9 { fill:rgb(65,171,93); }
-.q3-9 { fill:rgb(35,132,67); }
-.q4-9 { fill:rgb(0,104,55); }
-.q5-9 { fill:rgb(0,69,41); }
-.q6-9 { fill:rgb(0,0,0); }
-.q7-9 { fill:#EF3B2C; }
 
 
 
@@ -126,12 +113,19 @@
 <script src="js/bootstrap.min.js"></script>
 
 <script>
+    
+    
 
 var slider = d3.select("#slider").selectAll("div")
                 .data(d3.entries({epsilon: 200}))
               .enter().append("div")
                 .attr("id", function(d) { return d.key; });
+
+var green_scale = ["rgb(254,254,154)","rgb(206,234,147)","rgb(173,221,142)","rgb(151,211,137)","rgb(138,206,132)","rgb(130,202,129)","rgb(125,200,125)","rgb(120,198,121)","rgb(111,194,116)","rgb(100,190,110)","rgb(88,184,105)","rgb(75,178,99)","rgb(64,170,92)","rgb(56,163,87)","rgb(49,155,81)","rgb(44,147,75)","rgb(39,139,71)","rgb(35,131,66)","rgb(29,125,63)","rgb(24,119,60)","rgb(19,114,58)","rgb(14,109,56)","rgb(10,104,55)","rgb(6,98,53)","rgb(3,92,51)","rgb(2,85,48)","rgb(0,77,45)","rgb(0,68,40)","rgb(0,58,35)","rgb(0,47,29)","rgb(0,36,22)","rgb(0,25,16)","rgb(0,15,10)","rgb(0,6,4)","#EF3B2C"];
                 
+
+
+
 var width = 2460,
     height = 3180;
 
@@ -206,3 +200,4 @@ function ready(error, nz_gxp) {
 		});
     }
 </script>
+
