@@ -1,32 +1,92 @@
-<META HTTP-EQUIV="REFRESH" CONTENT="300">
 <!DOCTYPE html>
+<meta http-equiv="refresh" content="300">
 <meta charset="utf-8">
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css"/>
 <style>
-/*----------------------------
-	Default slider
------------------------------*/
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700);
 
-#defaultSlider{
+h1 {
+	text-align: center;
+}
+
+.span12 {
+    font-family: "Yanone Kaffeesatz";
+    text-rendering: optimizeLegibility;
+    font-size: 32px;
+    margin-top: .3em;
+    margin-bottom: 0; 
+}
+.span2 {
+    font-family: "Yanone Kaffeesatz";
+    text-rendering: optimizeLegibility;
+    font-size: 14px;
+    margin-top: .3em;
+    margin-bottom: 0; 
+	
+}
+
+.span10 {
+	float: left;
+}
+
+#defaultSlider {
 	width:200px;
 	margin-bottom:20px;
 }
 
-<!--.gxp {
-  fill: gray;
+.slider {
+	width: 200px;
+	margin: 6px;
+	margin-bottom:20px;
 }
-var colors = ["#ADDD8E","#78C679","#41AB5D","#238443","#006837","#004529","#000000","#EF3B2C"];
--->
-.q0-9 { fill:rgb(173,221,142); }
-.q1-9 { fill:rgb(120,198,121); }
-.q2-9 { fill:rgb(65,171,93); }
-.q3-9 { fill:rgb(35,132,67); }
-.q4-9 { fill:rgb(0,104,55); }
-.q5-9 { fill:rgb(0,69,41); }
-.q6-9 { fill:rgb(0,0,0); }
-.q7-9 { fill:#EF3B2C; }
-<!-- .q8-9 { fill:rgb(8,48,107); } -->
 
+.range_slider {
+	height: 2000px;
+	margin: 6px;
+	margin-bottom:20px;
+}
 
+.legend path,.legend line {
+	fill: none;
+	stroke: black;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
+	vector-effect: non-scaling-stroke;
+}
+
+#slider_axis path, #slider_axis line {
+	fill: none;
+	stroke: black;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
+	vector-effect: non-scaling-stroke;
+}
+
+#slider_axis {
+	font: 12px sans-serif;
+}
+
+#map {
+	font: 40px sans-serif;
+}
+
+.lines {
+	fill: none;
+	vector-effect: non-scaling-stroke;
+}
+
+.sDC350KV { stroke: #FF00FF; stroke-width: 5; opacity: 0.75; }
+.s0VDC    { stroke: #00FFC0; stroke-width: 2; opacity: 0.75; }
+.sGone    { stroke: #FFFFFF; stroke-width: 1; opacity: 0.75; }
+.sLVDC    { stroke: #FFFFFF; stroke-width: 1; opacity: 0.75; }
+.s220KV   { stroke: #FF9900; stroke-width: 3; opacity: 0.75; }
+.s220KV1p { stroke: #FF9900; stroke-width: 1; opacity: 0.75; }
+.s110KV   { stroke: #FF0000; stroke-width: 3; opacity: 0.75; }
+.s66KV    { stroke: #FFFF00; stroke-width: 3; opacity: 0.75; }
+.s50KV    { stroke: #D0FF00; stroke-width: 3; opacity: 0.75; }
+.s33KV    { stroke: #80FD00; stroke-width: 3; opacity: 0; }
+.s11KV    { stroke: #00FB00; stroke-width: 3; opacity: 0; }
+.s11KV1p  { stroke: #00FB00; stroke-width: 1; opacity: 0; }
 
 .q0-35 { fill:rgb(254,254,154); }
 .q1-35 { fill:rgb(206,234,147); }
@@ -58,15 +118,15 @@ var colors = ["#ADDD8E","#78C679","#41AB5D","#238443","#006837","#004529","#0000
 .q27-35 { fill:rgb(0,68,40); }
 .q28-35 { fill:rgb(0,58,35); }
 .q29-35 { fill:rgb(0,47,29); }
-.q30-35 { fill:rgb(0,36,22); }
-.q31-35 { fill:rgb(0,25,16); }
-.q32-35 { fill:rgb(0,15,10); }
-.q33-35 { fill:rgb(0,6,4); }
-<!--.q34-35 { fill:rgb(0,0,0); }-->
+/* .q30-35 { fill:rgb(0,36,22); } */
+/* .q31-35 { fill:rgb(0,25,16); } */
+/* .q32-35 { fill:rgb(0,15,10); } */
+/* .q33-35 { fill:rgb(0,6,4); } */
 .q34-35 { fill:#EF3B2C; }
 
 #tooltip {
     position: absolute;
+    margin-top: 20;
 	width: 600px;
 	height: auto;
 	padding: 10px;
@@ -85,38 +145,85 @@ var colors = ["#ADDD8E","#78C679","#41AB5D","#238443","#006837","#004529","#0000
 }
 			
 #tooltip p {
-	margin: 0;
+    margin: 0;
 	font-family: sans-serif;
 	font-size: 26px;
 	line-height: 30px;
 }
-
-
-
 </style>
 <body>
-<div id='slider'></div>
 
-<div id="tooltip" class="hidden">
-	<p><strong>Current price at: </strong></p>
-	<p><span id="value">100</span></p>
-</div>
+    <div class="row">
+        <div class="span12" id="title">
+        	<h1>Realtime price monitor</h1>
+        </div>
+    </div>
+    <div class="row">
+    	<div id="slider"></div>
+    	<div id="slider_axis"></div>
+    </div>
+    <div class="row">
+        <div class="span2" id="info"> 
+            <form id="gxpsCheckbox">
+            	<input type="checkbox" checked>Show GXP/GIPs
+            </form>
+            <form id="linesCheckbox">
+            	<input type="checkbox" checked>Show transmission lines
+            </form>
+            <form id="logScaleCheckbox">
+            	<input type="checkbox">Use log colour scale
+            </form>
+            <form id="autoScaleCheckbox">
+            	<input type="checkbox" checked>Automatically set colour scale
+            </form>
+            <div id="tooltip" class="hidden">
+                <p><strong>Current price at: </strong></p>
+                <p><span id="value">100</span></p>
+            </div>
+        </div>
+        <div style="width:90%" class="span10" id="map"></div>
+        <div style="height:800px" class="span10">
+        	<div style="height:100%" id="range_slider"></div>
+        </div>
+    </div>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/queue.v1.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 
 <script>
 
-var slider = d3.select("#slider").selectAll("div")
-                .data(d3.entries({epsilon: 200}))
-              .enter().append("div")
-                .attr("id", function(d) { return d.key; });
-                
+var green_scale = ["rgb(254,254,154)","rgb(206,234,147)","rgb(173,221,142)","rgb(151,211,137)","rgb(138,206,132)","rgb(130,202,129)","rgb(125,200,125)","rgb(120,198,121)","rgb(111,194,116)","rgb(100,190,110)","rgb(88,184,105)","rgb(75,178,99)","rgb(64,170,92)","rgb(56,163,87)","rgb(49,155,81)","rgb(44,147,75)","rgb(39,139,71)","rgb(35,131,66)","rgb(29,125,63)","rgb(24,119,60)","rgb(19,114,58)","rgb(14,109,56)","rgb(10,104,55)","rgb(6,98,53)","rgb(3,92,51)","rgb(2,85,48)","rgb(0,77,45)","rgb(0,68,40)","rgb(0,58,35)","rgb(0,47,29)","rgb(0,36,22)","rgb(0,25,16)","rgb(0,15,10)","rgb(0,6,4)","#EF3B2C"];
+         
+var legendWidth = 80;
+
+var legendMargin = {
+	top : 25,
+	right : 70,
+	bottom : 25,
+	left : 0
+};
+
 var width = 2460,
     height = 3180;
- 
-var priceById =d3.map();
+
+var legendHeight = height - legendMargin.top - legendMargin.bottom;
+
+var gxpsOn = $('#gxpsCheckbox :checkbox').is(':checked');
+var linesOn = $('#linesCheckbox :checkbox').is(':checked');
+var useLogScale = $('#logScaleCheckbox :checkbox').is(':checked');
+var autoScale = $('#autoScaleCheckbox :checkbox').is(':checked');
+
+var prices = [];
+var time;
+var timeIndex = 0;
+var price;
+var latitude = d3.map();
+var longitude = d3.map();
+var quantize;
 
 var projection = d3.geo.mercator()
     .scale(10000)
@@ -125,59 +232,332 @@ var projection = d3.geo.mercator()
 
 var path = d3.geo.path().projection(projection);
 
-var svg = d3.select("body").append("svg")
-    //.attr("width", width)
-    //.attr("height", height);
-    .attr("viewBox", "0 0 " + width + " " + height )
-    .attr("preserveAspectRatio", "xMidYMid meet");
+var svg = d3.select("#map").append("svg")
+        .attr("viewBox", "0 0 " + (width + legendMargin.left + legendWidth + legendMargin.right) + " " + height)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("id", "map_of_nz");
+
+var parseTime = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+
+console.log("Starting queue");
 
 queue()
-    .defer(d3.json, "/nz_gxp.json")
-    .defer(d3.csv, "price.csv",function(d) {priceById.set(d.id,+d.price); })
+    .defer(d3.json, "nz_gxp.json")
+    .defer(d3.json, "Network_lines_topo.json")
+    .defer(d3.csv, "all_week.csv",
+    	function(d) {
+    		var price = d3.map();
+    		for (var property in d)
+    			if (property !== "date" && property !== "TP")
+    				price.set(property, d[property].length === 0 ? undefined : 100 * Number(d[property]));
+    	
+    		prices.push({
+    			time : parseTime(d.date),
+    			price : price
+    		});
+    	})
+    .defer(d3.csv, "gxps_filtered.csv",
+    	function(d) {
+    		latitude.set(d.id,+d.lat);
+    		longitude.set(d.id,+d["long"]);
+    	})
     .await(ready);
 
-function ready(error, nz_gxp) {
-	var quantize = d3.scale.quantize()
-	//Playing with suitable scales, to a max of log(400)
-    //.domain([d3.min(d3.values(priceById))-(d3.min(d3.values(priceById))*0.125), d3.max(d3.values(priceById))+(d3.max(d3.values(priceById))*0.01)])
-    //.domain([Math.log(d3.min(d3.values(priceById))), Math.log(d3.max(d3.values(priceById)))])
-    .domain([Math.log(d3.min(d3.values(priceById))), Math.log(400)])
-    //.domain([0, Math.log(400)])
- 
-    .range(d3.range(35).map(function(i) { return "q" + i + "-35"; }));
+function ready(error, nz_gxp, Network_topo) {
+// 	for (var property in prices)
+// 		console.log(property + ": " + prices[property]);
+	
+	slider = $("#slider").slider({
+		min: 0,
+		max: prices.length-1,
+		value: prices.length-1,
+		slide: function(event, ui) {
+			timeIndex = ui.value;
+			update();
+			if (autoScale)
+				updateColorScale();
+		},
+		stop: function(event, ui) {
+			//updateColorScale();
+		}
+	});
+	
+	timeIndex = prices.length - 1;
+	
+	var formatPrice = d3.format(".2f");
+	
+	var time = prices[timeIndex];
+	
+	var selectedTime = time.time;
+	console.log("selectedTime = " + time.time.toLocaleString());
+	
+	
+	
+	price = time.price;
+	
+	console.log("price: " + price);
+	
+	d3.select("h1").text(time.time.toLocaleString());
+	
+	function add_gxps() {
+	//	d3.csv("/wits_ftp/gxps_filtered.csv", function(error, data) {
+			svg.selectAll("circle")
+				.data(latitude.keys())
+				.enter()
+				.append("circle")
+				.attr("cx", function(d) { return projection([longitude.get(d), latitude.get(d)])[0]; })
+				.attr("cy", function(d) { return projection([longitude.get(d), latitude.get(d)])[1]; })
+				.attr("r", 10)
+				.attr("class", function(d) {
+					var p = price.get(d);
+					if (p > upperThreshold)
+						return highPriceClass;
+					return useLogScale ? quantize(Math.log(p)) : quantize(p);
+				})
+				.attr("stroke", "black")
+				.attr("id", "gxps")
+				.on('mouseover', function(d) { 
+					d3.select("#tooltip")
+						.select("#value")
+						.text(console.log(d))
+						.text(d + " = $" + formatPrice(price.get(d)));
+					d3.select("#tooltip").classed("hidden", false);
+				});
+	//	});
+	}
+	
+	function update() {
+		time = prices[timeIndex];
+		price = time.price;
+		
+		d3.select("h1").text(time.time.toLocaleString());
+		
+		svg.selectAll("circle")
+			.attr("class", function(d) {
+				var p = price.get(d);
+				if (p > upperThreshold)
+					return highPriceClass;
+				return useLogScale ? quantize(Math.log(p)) : quantize(p);
+			});
+		
+		svg.select(".gxps")
+		  .selectAll("path")
+			.attr("class", function(d) {
+				var p = price.get(d.id);
+				if (p > upperThreshold)
+					return highPriceClass;
+				return useLogScale ? quantize(Math.log(p)) : quantize(p);
+			});
+	}
+	
+	var upperThreshold = 400;
+	var lowerThreshold = useLogScale ? 1 : 0;
+	
+	var minPrice = d3.max([lowerThreshold, d3.min(d3.values(price))]);
+	var maxPrice = d3.min([upperThreshold, d3.max(d3.values(price))]);
+	
+	var range_slider = $("#range_slider").slider({
+		disabled: autoScale,
+		min: lowerThreshold,
+		max: upperThreshold,
+		orientation: "vertical",
+		range: true,
+		values: [minPrice, maxPrice],
+		slide: function(event, ui) {
+			minPrice = d3.max([lowerThreshold, ui.values[0]]);
+			maxPrice = d3.min([upperThreshold, ui.values[1]]);
+			update();
+			updateColorScale();
+		},
+		stop: function(event, ui) {
+			//updateColorScale();
+		}
+	});
+	
+	var highPrices = (d3.max(d3.values(price) > upperThreshold));
+	
+	var colorClasses = d3.range(30).map(function(i) { return "q" + i + "-35"; });
+	console.log("colorClasses: " + colorClasses);
+	var highPriceClass = "q34-35";
+	
+    quantize = d3.scale.quantize()
+		.domain(useLogScale ? [Math.log(minPrice), Math.log(maxPrice)] : [minPrice, maxPrice])
+    	.range(colorClasses);
+	
+	var priceScale = useLogScale ? d3.scale.log() : d3.scale.linear();
+	priceScale
+		.domain([minPrice, maxPrice])
+		.range([legendHeight,0]);
+    
+    var colorScale = d3.scale.ordinal()
+    	.domain(colorClasses)
+    	.rangeBands([legendHeight,0]);
+	
+    var priceAxis = d3.svg.axis()
+    	.scale(priceScale)
+    	.orient("right")
+    	.tickSize(13)
+		.ticks(20)
+    	.tickFormat(d3.format("d"));
+    
+	legend = svg.append("g")
+	  	.attr("class", "legend")
+	  	.attr("transform", "translate(" + (width + legendMargin.left) + "," + legendMargin.top + ")");
+    
+	legend.selectAll("rect")
+		.data(colorClasses)
+		.enter().append("rect")
+			.attr("width", legendWidth)
+			.attr("y", function(d) { return colorScale(d); })
+			.attr("height", colorScale.rangeBand())
+			.attr("class", function(d) { return d; });
+	
+	legend.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(" + legendWidth + ",0)")
+		.call(priceAxis);
+	
+	
+	var timeScale = d3.time.scale()
+		.domain([prices[0].time, prices[prices.length-1].time])
+		.range([0, 2000]);
 
-	console.log(Math.log(d3.max(d3.values(priceById))))
-	//console.log(Math.log(d3.min(d3.values(priceById))))
+	var timeAxis = d3.svg.axis()
+		.scale(timeScale)
+		.orient("bottom")
+		.tickSize(7)
+		.ticks(10);
+	
+	
+	d3.select("#slider_axis").append("svg")
+		.attr("height", 30)
+    	.attr("viewBox", "0 0 2000 10")
+    	.attr("preserveAspectRatio", "xMidYMin meet")
+    	.attr("id", "slider_axis_svg")
+			.call(timeAxis);
+	
+	function updateColorScale() {
+		lowerThreshold = useLogScale ? 1 : 0;
+		
+		if (autoScale) {
+			minPrice = d3.max([lowerThreshold, d3.min(d3.values(price))]);
+			maxPrice = d3.min([upperThreshold, d3.max(d3.values(price))]);
+			
+			range_slider.slider("values", [minPrice, maxPrice]);
+		}
+		
+		quantize = d3.scale.quantize()
+			.domain(useLogScale ? [Math.log(minPrice), Math.log(maxPrice)] : [minPrice, maxPrice])
+    		.range(colorClasses);
+		
+		var priceScale = useLogScale ? d3.scale.log() : d3.scale.linear();
+		priceScale
+			.domain([minPrice, maxPrice])
+			.range([legendHeight,0]);
+		
+		svg.selectAll("circle")
+			.attr("class", function(d) {
+				var p = price.get(d);
+				if (p > upperThreshold)
+					return highPriceClass;
+				return useLogScale ? quantize(Math.log(p)) : quantize(p);
+			});
+		
+		svg.select(".gxps")
+		  .selectAll("path")
+			.attr("class", function(d) {
+				var p = price.get(d.id);
+				if (p > upperThreshold)
+					return highPriceClass;
+				return useLogScale ? quantize(Math.log(p)) : quantize(p);
+			});
+		
+		priceAxis.scale(priceScale);
+		svg.select(".axis")
+			.call(priceAxis);
+	}
+	
+	console.log("Network_topo: " + Object.keys(Network_topo.objects));
+	
     svg.append("g")
-        .attr("class","GXP_WGS84")
+      .attr("class", "gxps")
       .selectAll("path")
         .data(topojson.feature(nz_gxp, nz_gxp.objects.GXP_WGS84).features)
-      .enter().append("path")
-        .attr("class", function(d) { return quantize(Math.log(priceById.get(d.id)));})
-        //.attr("class", function(d) { console.log(Math.log(priceById.get(d.id)));})
-
-        .attr("d", path);
-    svg.selectAll("path").on('mouseover', function(d) { 
-		//console.log(d.properties.name + '(' + d.id + ') $' + priceById.get(d.id)); 
-		
-							//Update the tooltip position and value
-					d3.select("#tooltip")
-						//.style("left", 300 + "px")
-						//.style("top", 400 + "px")						
-						.select("#value")
-						.text(d.properties.name + '(' + d.id + ') = $' + priceById.get(d.id));
-			   
-					//Show the tooltip
-					d3.select("#tooltip").classed("hidden", false);
-
-		
-		});
-        
+        .enter().append("path")
+		  .attr("class", function(d) {
+			var p = price.get(d.id);
+			if (p > upperThreshold)
+				return highPriceClass;
+			return useLogScale ? quantize(Math.log(p)) : quantize(p);
+		  })
+		  .attr("d", path);
+    add_gxps();
     
+    var network = topojson.feature(Network_topo, Network_topo.objects.Network).features;
+    var lines = network.filter(function(feature) {
+    	return feature.geometry.type === "LineString";
+    })
+    console.log("network: " + network[1500].properties.styleUrl.slice(1));
+    
+    svg.append("g")
+    	.attr("class", "lines")
+    	.attr("visibility", linesOn ? "visible" : "hidden")
+    	.selectAll("path")
+    	  .data(lines)
+    	  .enter().append("path")
+    	    .attr("class", function(l) {
+    	    	return "s" + l.properties.styleUrl.slice(1);
+    	    })
+    	    .attr("d", path);
+    
+    $('#gxpsCheckbox :checkbox').click(function() {
+    	console.log("checked: " + this.checked);
+    	
+    	if (gxpsOn && !this.checked) {
+    		console.log("removing circles");
+    		svg.selectAll("circle").remove();
+            gxpsOn = false;
         }
- 
-
-
- 
- 
+        else if (!gxpsOn && this.checked) {
+        	console.log("adding circles");
+            add_gxps();
+            gxpsOn = true;
+        }
+    	console.log("gxps " + (gxpsOn ? "on" : "off"));
+	});
+    
+    $('#linesCheckbox :checkbox').click(function() {
+    	linesOn = this.checked;
+    	svg.select(".lines").attr("visibility", linesOn ? "visible" : "hidden");
+    	console.log("lines " + (linesOn ? "on" : "off"));
+	});
+    
+    $('#logScaleCheckbox :checkbox').click(function() {
+    	useLogScale = this.checked;
+    	
+    	update();
+    	updateColorScale();
+	});
+    
+    $('#autoScaleCheckbox :checkbox').click(function() {
+    	autoScale = this.checked;
+    	
+    	if (autoScale) {
+    		range_slider.slider("disable");
+    		
+    		update();
+    		updateColorScale();
+    	}
+    	else {
+    		range_slider.slider("enable");
+    	}
+    });
+        
+    svg.selectAll("path").on("mouseover", function(d) { 
+		d3.select("#tooltip")
+			.select("#value")
+			.text(d.properties.name + "(" + d.id + ") = $" + formatPrice(price.get(d.id)));
+		d3.select("#tooltip").classed("hidden", false);
+	});
+}
 </script>
