@@ -1,10 +1,16 @@
 nzmap
 =====
 
-An initial attempt at mapping NZ based on d3 topoJSON.
-Data supplied through the Electricity Authority data warehouse.
+Example NZ map (javascript/d3/TOPOjson).
+
+d3/svg regions loosely based on Grid Exit Points (GXPs) supplied area through NSP/ICP mapping.
+
+Regional mappings supplied by Electricity Authority.  Real Time Price data obtained from wits.
+
 Currently svg mappings are based on GXP regions where a GXP is mapped to individual NSP/ICPs.
 
-This mapping will be used to plot real-time spot prices in the NZ Electricity market.
+With updated wits data (every five minutes), can be used to plot real-time spot prices in the NZ Electricity market.
 
-10/6/2013 DJ Hume 
+http://djhume.github.io/nzmap/
+
+10/6/2013 DJHume 
